@@ -21,8 +21,8 @@ fun Routing.installMailer(mailer: FlixServerMailer, endpoint: FlixMailEndpoint) 
         call.response.cacheControl(CacheControl.NoCache(null))
         call.response.header(HttpHeaders.Connection, "Keep-Alive")
         call.respondBytesWriter(contentType = ContentType.Text.EventStream) {
-            while (true) {
-                val data = mailer.channel.receive()
+            mailer.flow.collect {
+                val data = it ?: return@collect
                 writeStringUtf8("id: 0\n")
                 writeStringUtf8("event: message\n")
                 writeStringUtf8("data: ${data.body}\n")
@@ -38,7 +38,7 @@ fun Routing.installMailer(mailer: FlixServerMailer, endpoint: FlixMailEndpoint) 
             mailer.send(
                 draft = EmailDraft("Test Email", text),
                 from = AddressInfo(name = "Raven Test Server", email = "server@raven.com"),
-                to = AddressInfo(name = "Raven Test Client", email = "server@raven.com")
+                to = AddressInfo(name = "Raven Test Client", email = "client@raven.com")
             ).await()
         }
         call.respondText(text)
