@@ -7,7 +7,7 @@ import java.io.InputStream
 import java.lang.IllegalArgumentException
 import java.util.*
 
-interface SmtpMailerConfig {
+interface SmtpMailerOptions {
     val host: String
     val port: Int
     val user: String?
@@ -54,7 +54,7 @@ interface SmtpMailerConfig {
             debug: Boolean = DEBUG.default,
             socketFactory: SocketFactoryConfig = SocketFactoryConfig(),
             scope: CoroutineScope = DEFAULT_SCOPE
-        ) = object : SmtpMailerConfig {
+        ) = object : SmtpMailerOptions {
             init {
                 if (auth && user == null) {
                     throw IllegalArgumentException("User must not be null when auth is set to true (which is the default behaviour)")
@@ -109,7 +109,7 @@ interface SmtpMailerConfig {
             scope: CoroutineScope = DEFAULT_SCOPE
         ) = invoke(properties, scope)
 
-        fun from(stream: InputStream): SmtpMailerConfig {
+        fun from(stream: InputStream): SmtpMailerOptions {
             val props = Properties().apply { load(stream) }
             return invoke(props)
         }

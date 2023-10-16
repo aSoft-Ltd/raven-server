@@ -19,7 +19,7 @@ class SmtpMailerTest {
         load(inStream)
     }
 
-    val config = SmtpMailerConfig(prop)
+    val config = SmtpMailerOptions(prop)
 
     val mailer: Mailer = SmtpMailer(config)
 

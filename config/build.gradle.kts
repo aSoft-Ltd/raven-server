@@ -1,22 +1,22 @@
 plugins {
-    kotlin("jvm")
+    kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("tz.co.asoft.library")
 }
 
 kotlin {
-    target { library() }
+    jvm { library() }
 
     sourceSets {
-        val main by getting {
+        val commonMain by getting {
             dependencies {
-                api(libs.raven.api)
-                api(libs.koncurrent.later.coroutines)
-                implementation(javax.mail)
+                api(projects.ravenFlixSender)
+                api(projects.ravenSmtp)
+                api(kotlinx.serialization.toml)
             }
         }
 
-        val test by getting {
+        val commonTest by getting {
             dependencies {
                 implementation(libs.kommander.coroutines)
             }

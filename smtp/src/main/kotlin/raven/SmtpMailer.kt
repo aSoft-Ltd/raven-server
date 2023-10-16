@@ -2,7 +2,6 @@ package raven
 
 import kollections.List
 import koncurrent.Later
-import koncurrent.later
 import javax.activation.DataHandler
 import javax.activation.FileDataSource
 import javax.mail.Authenticator
@@ -15,8 +14,9 @@ import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
 import javax.mail.util.ByteArrayDataSource
+import koncurrent.later
 
-class SmtpMailer(val config: SmtpMailerConfig) : Mailer {
+class SmtpMailer(val config: SmtpMailerOptions) : Mailer {
 
     private val authenticator by lazy {
         object : Authenticator() {
