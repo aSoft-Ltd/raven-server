@@ -2,6 +2,6 @@ package raven
 
 import kotlinx.coroutines.CoroutineScope
 
-class FlixMailerOptions(
+class FlixServerMailerOptions(
     val scope: CoroutineScope
 )

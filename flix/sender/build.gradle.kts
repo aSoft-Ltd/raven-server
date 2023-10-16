@@ -10,7 +10,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(libs.raven.api)
+                api(libs.raven.mock)
                 api(libs.koncurrent.later.coroutines)
                 api(ktor.server.core)
             }
