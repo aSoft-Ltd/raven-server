@@ -23,7 +23,7 @@ class SmtpMailingConfigurationTest {
     fun should_be_able_to_configure_smtp_mailing_options() {
         val raw = """
             [mail]
-            sender = "smtp"
+            type = "smtp"
             host = "host"
             user = "user"
             password = "password"
@@ -38,7 +38,7 @@ class SmtpMailingConfigurationTest {
     fun should_be_able_to_configure_smtp_mailer() {
         val raw = """
             [mail]
-            sender = "smtp"
+            type = "smtp"
             host = "host"
             user = "user"
             password = "password"

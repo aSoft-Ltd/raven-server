@@ -17,25 +17,25 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 class MailingConfiguration(
-    val sender: String? = null,
+    val type: String? = null,
     val host: String? = null,
     val port: Int? = null,
     val user: String? = null,
     val password: String? = null
 ) {
     fun toOptions(scope: CoroutineScope): Any? {
-        val s = sender ?: return null
+        val s = type ?: return null
         return when {
-            s.contains(MailSender.Flix.name, ignoreCase = true) -> FlixServerMailerOptions(scope)
-            s.contains(MailSender.Mock.name, ignoreCase = true) -> MockMailerOptions(scope = scope)
-            s.contains(MailSender.Smtp.name, ignoreCase = true) -> SmtpMailerOptions(
+            s.contains(MailSenderType.Flix.name, ignoreCase = true) -> FlixServerMailerOptions(scope)
+            s.contains(MailSenderType.Mock.name, ignoreCase = true) -> MockMailerOptions(scope = scope)
+            s.contains(MailSenderType.Smtp.name, ignoreCase = true) -> SmtpMailerOptions(
                 host = host ?: throw smtpMustHave("host"),
                 user = user ?: throw smtpMustHave("user"),
                 port = port ?: 465,
                 password = password ?: throw smtpMustHave("password")
             )
 
-            else -> throw IllegalArgumentException("Unsupported mail sender type. Available options are ${MailSender.values()}")
+            else -> throw IllegalArgumentException("Unsupported mail sender type. Available options are ${MailSenderType.values()}")
         }
     }
 

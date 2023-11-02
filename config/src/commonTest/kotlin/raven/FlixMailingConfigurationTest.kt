@@ -23,7 +23,7 @@ class FlixMailingConfigurationTest {
     fun should_be_able_to_configure_flix_mailing_options() {
         val raw = """
             [mail]
-            sender = "flix"
+            type = "flix"
         """.trimIndent()
 
         val config = codec.decodeFromString<TestConfig>(raw)
@@ -35,7 +35,7 @@ class FlixMailingConfigurationTest {
     fun should_be_able_to_configure_flix_mailer() {
         val raw = """
             [mail]
-            sender = "flix"
+            type = "flix"
         """.trimIndent()
 
         val config = codec.decodeFromString<TestConfig>(raw)

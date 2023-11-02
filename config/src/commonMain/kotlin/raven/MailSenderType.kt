@@ -1,5 +1,5 @@
 package raven
 
-enum class MailSender {
+enum class MailSenderType {
     Mock, Flix, Smtp
 }

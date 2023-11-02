@@ -23,7 +23,7 @@ class MockMailingConfigurationTest {
     fun should_be_able_to_configure_mock_mailing_options() {
         val raw = """
             [mail]
-            sender = "mock"
+            type = "mock"
         """.trimIndent()
 
         val config = codec.decodeFromString<TestConfig>(raw)
@@ -35,7 +35,7 @@ class MockMailingConfigurationTest {
     fun should_be_able_to_configure_mock_mailer() {
         val raw = """
             [mail]
-            sender = "mock"
+            type = "mock"
         """.trimIndent()
 
         val config = codec.decodeFromString<TestConfig>(raw)
