@@ -1,7 +1,5 @@
 package raven
 
-import kollections.List
-import koncurrent.Later
 import javax.activation.DataHandler
 import javax.activation.FileDataSource
 import javax.mail.Authenticator
@@ -14,40 +12,38 @@ import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
 import javax.mail.util.ByteArrayDataSource
+import koncurrent.Later
 import koncurrent.later
 
-@Deprecated("use SmtpEmailSender instead")
-class SmtpMailer(val config: SmtpMailerOptions) : Mailer {
+class SmtpEmailSender(val options: SmtpMailerOptions) : EmailSender {
 
     private val authenticator by lazy {
         object : Authenticator() {
             override fun getPasswordAuthentication(): PasswordAuthentication {
-                return PasswordAuthentication(config.user, config.password)
+                return PasswordAuthentication(options.user, options.password)
             }
         }
     }
 
-    private val session by lazy {
-        Session.getDefaultInstance(config.toProperties(), authenticator)
-    }
+    private val session by lazy { Session.getDefaultInstance(options.toProperties(), authenticator) }
 
-    private fun AddressInfo.toInternetAddress() = if (name == null) {
-        InternetAddress(email.value)
+    private fun Address.toInternetAddress() = if (name == null) {
+        InternetAddress(email)
     } else {
-        InternetAddress(email.value, name)
+        InternetAddress(email, name)
     }
 
-    override fun send(draft: EmailDraft, from: AddressInfo, to: List<AddressInfo>): Later<EmailMessage> = config.scope.later {
+    override fun send(params: SendEmailParams): Later<SendEmailParams> = options.scope.later{
         val message = MimeMessage(session).apply {
-            setFrom(from.toInternetAddress())
-            addRecipients(Message.RecipientType.TO, to.map { it.toInternetAddress() }.toTypedArray())
+            setFrom(params.from.toInternetAddress())
+            addRecipients(Message.RecipientType.TO, params.to.map { it.toInternetAddress() }.toTypedArray())
             val multipart = MimeMultipart("mixed");
-            subject = draft.subject
+            subject = params.subject
             val messageBodyPart = MimeBodyPart();
-            messageBodyPart.setContent(draft.body, "text/html");
+            messageBodyPart.setContent(params.body, "text/html");
             multipart.addBodyPart(messageBodyPart);
 
-            draft.attachments.forEachIndexed { index, attachment ->
+            params.attachments.forEachIndexed { index, attachment ->
                 val attachmentBodyPart = MimeBodyPart()
                 val dataSource = when (attachment) {
                     is ByteArrayAttachment -> ByteArrayDataSource(attachment.content, attachment.type)
@@ -66,8 +62,8 @@ class SmtpMailer(val config: SmtpMailerOptions) : Mailer {
         }
 
         Transport.send(message)
-        draft.toMessage(from, to)
+        params
     }
 
-    override fun toString(): String = "SmtpMailer(host=${config.host},port=${config.port})"
+    override fun toString(): String = "SmtpEmailSender(host=${options.host},port=${options.port})"
 }

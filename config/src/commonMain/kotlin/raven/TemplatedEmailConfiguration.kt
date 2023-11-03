@@ -11,7 +11,7 @@ class TemplatedEmailConfiguration(
     val template: String? = null
 ) {
     fun toOptions(service: String) = TemplatedEmailOptions(
-        address = AddressInfo(
+        address = Address(
             name = name ?: service.replaceFirstChar { it.uppercaseChar() },
             email = address ?: throw IllegalArgumentException("$service email address is required")
         ),
