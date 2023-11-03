@@ -1,15 +1,15 @@
 package raven
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import sanity.EventBus
 
 @Serializable
 class MailFactoryConfiguration(
     @SerialName("sender")
     val senders: List<MailingConfiguration>
 ) {
-    fun toFactory(scope: CoroutineScope) = MailSenderFactory().apply {
-//        addAll(senders.mapNotNull { it.toMailer(scope) })
+    fun toFactory(bus: EventBus) = MailSenderFactory().apply {
+        addAll(senders.mapNotNull { it.toSender(bus) })
     }
 }

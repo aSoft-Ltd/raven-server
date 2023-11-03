@@ -1,7 +1,7 @@
 package raven
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
+import sanity.EventBus
 
 /**
  * mail.smtp.host=smtp.sendgrid.net
@@ -23,11 +23,11 @@ class MailingConfiguration(
     val user: String? = null,
     val password: String? = null
 ) {
-    fun toOptions(scope: CoroutineScope): Any? {
+    fun toOptions(bus: EventBus): Any? {
         val s = type ?: return null
         return when {
-            s.contains(MailSenderType.Flix.name, ignoreCase = true) -> FlixServerMailerOptions(scope)
-            s.contains(MailSenderType.Mock.name, ignoreCase = true) -> MockMailerOptions(scope = scope)
+            s.contains(MailSenderType.Bus.name, ignoreCase = true) -> BusEmailSenderOptions(bus)
+            s.contains(MailSenderType.Console.name, ignoreCase = true) -> ConsoleEmailSenderOptions()
             s.contains(MailSenderType.Smtp.name, ignoreCase = true) -> SmtpMailerOptions(
                 host = host ?: throw smtpMustHave("host"),
                 user = user ?: throw smtpMustHave("user"),
@@ -41,11 +41,11 @@ class MailingConfiguration(
 
     private fun smtpMustHave(key: String) = IllegalArgumentException("smtp sender must have a $key configuration")
 
-    fun toMailer(scope: CoroutineScope): Mailer? = when (val options = toOptions(scope)) {
+    fun toSender(bus: EventBus): EmailSender? = when (val options = toOptions(bus)) {
         null -> null
-        is FlixServerMailerOptions -> FlixServerMailer(options)
-        is MockMailerOptions -> MockMailer(options)
-        is SmtpMailerOptions -> SmtpMailer(options)
+        is ConsoleEmailSenderOptions -> ConsoleEmailSender(options)
+        is BusEmailSenderOptions -> BusEmailSender(options)
+        is SmtpMailerOptions -> SmtpEmailSender(options)
         else -> throw IllegalArgumentException("Unsupported mailing option")
     }
 }

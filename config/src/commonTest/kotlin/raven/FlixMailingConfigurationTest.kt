@@ -39,7 +39,7 @@ class FlixMailingConfigurationTest {
         """.trimIndent()
 
         val config = codec.decodeFromString<TestConfig>(raw)
-        val mailer = config.mail?.toMailer(scope)
+        val mailer = config.mail?.toSender(scope)
         expect(mailer).toBe<FlixServerMailer>()
     }
 }
