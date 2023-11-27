@@ -24,4 +24,3 @@ listOf(
 rootProject.name = "raven-server"
 
 includeSubs(base = "raven", path = ".", "smtp", "config")
-includeSubs(base = "raven-flix", path = "flix", "sender")

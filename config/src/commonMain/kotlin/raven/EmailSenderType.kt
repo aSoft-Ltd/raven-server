@@ -1,5 +1,5 @@
 package raven
 
-enum class MailSenderType {
+enum class EmailSenderType {
     Console, Bus, Smtp
 }

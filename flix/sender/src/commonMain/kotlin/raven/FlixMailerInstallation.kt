@@ -16,6 +16,7 @@ import io.ktor.utils.io.writeStringUtf8
 import koncurrent.later.await
 import kotlinx.coroutines.launch
 
+@Deprecated("Do not use this install no more")
 fun Routing.installMailer(mailer: FlixServerMailer, endpoint: FlixMailEndpoint) {
     get(endpoint.mailbox()) {
         call.response.cacheControl(CacheControl.NoCache(null))

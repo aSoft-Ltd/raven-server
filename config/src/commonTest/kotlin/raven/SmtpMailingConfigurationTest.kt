@@ -8,15 +8,17 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import net.peanuuutz.tomlkt.Toml
+import sanity.LocalBus
 
 class SmtpMailingConfigurationTest {
 
     @Serializable
     class TestConfig(
-        val mail: MailingConfiguration?
+        val mail: EmailSenderConfiguration?
     )
 
-    private val scope = CoroutineScope(SupervisorJob())
+    private val topic = BusEmailTopic()
+    private val bus = LocalBus()
     private val codec = Toml { ignoreUnknownKeys = true }
 
     @Test
@@ -30,7 +32,7 @@ class SmtpMailingConfigurationTest {
         """.trimIndent()
 
         val config = codec.decodeFromString<TestConfig>(raw)
-        val options = config.mail?.toOptions(scope)
+        val options = config.mail?.toOptions(bus, topic, codec)
         expect(options).toBe<SmtpMailerOptions>()
     }
 
@@ -45,7 +47,7 @@ class SmtpMailingConfigurationTest {
         """.trimIndent()
 
         val config = codec.decodeFromString<TestConfig>(raw)
-        val mailer = config.mail?.toSender(scope)
-        expect(mailer).toBe<SmtpMailer>()
+        val mailer = config.mail?.toSender(bus,topic, codec)
+        expect(mailer).toBe<SmtpEmailSender>()
     }
 }

@@ -2,30 +2,30 @@ package raven
 
 import kommander.expect
 import kotlin.test.Test
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import net.peanuuutz.tomlkt.Toml
+import sanity.LocalBus
 
-class MailFactoryConfigurationTest {
+class MultiEmailSenderFactoryConfigurationTest {
 
     @Serializable
     class TestConfig(
-        val mail: MailFactoryConfiguration?
+        val mail: MultiEmailSenderFactoryConfiguration?
     )
 
-    private val scope = CoroutineScope(SupervisorJob())
+    private val topic = BusEmailTopic()
+    private val bus = LocalBus()
     private val codec = Toml { ignoreUnknownKeys = true }
 
     @Test
     fun should_be_able_to_configure_multiple_mailing_options() {
         val raw = """
             [[mail.sender]]
-            type = "flix"
+            type = "bus"
             
             [[mail.sender]]
-            type = "mock"
+            type = "console"
             
             [[mail.sender]]
             type = "smtp"
@@ -35,6 +35,6 @@ class MailFactoryConfigurationTest {
         """.trimIndent()
 
         val config = codec.decodeFromString<TestConfig>(raw)
-        expect(config.mail?.toFactory(scope)).toBeNonNull()
+        expect(config.mail?.toFactory(bus, topic, codec)).toBeNonNull()
     }
 }

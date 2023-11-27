@@ -8,38 +8,40 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import net.peanuuutz.tomlkt.Toml
+import sanity.LocalBus
 
-class FlixMailingConfigurationTest {
+class ConsoleEmailSenderConfigurationTest {
 
     @Serializable
     class TestConfig(
-        val mail: MailingConfiguration?
+        val mail: EmailSenderConfiguration?
     )
 
-    private val scope = CoroutineScope(SupervisorJob())
+    private val topic = BusEmailTopic()
+    private val bus = LocalBus()
     private val codec = Toml { ignoreUnknownKeys = true }
 
     @Test
-    fun should_be_able_to_configure_flix_mailing_options() {
+    fun should_be_able_to_configure_mock_mailing_options() {
         val raw = """
             [mail]
-            type = "flix"
+            type = "console"
         """.trimIndent()
 
         val config = codec.decodeFromString<TestConfig>(raw)
-        val options = config.mail?.toOptions(scope)
-        expect(options).toBe<FlixServerMailerOptions>()
+        val options = config.mail?.toOptions(bus, topic, codec)
+        expect(options).toBe<ConsoleEmailSenderOptions>()
     }
 
     @Test
-    fun should_be_able_to_configure_flix_mailer() {
+    fun should_be_able_to_configure_mock_mailer() {
         val raw = """
             [mail]
-            type = "flix"
+            type = "console"
         """.trimIndent()
 
         val config = codec.decodeFromString<TestConfig>(raw)
-        val mailer = config.mail?.toSender(scope)
-        expect(mailer).toBe<FlixServerMailer>()
+        val mailer = config.mail?.toSender(bus, topic, codec)
+        expect(mailer).toBe<ConsoleEmailSender>()
     }
 }

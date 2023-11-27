@@ -10,8 +10,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(projects.ravenFlixSender)
                 api(libs.raven.bus)
+                api(libs.sanity.local)
                 api(projects.ravenSmtp)
                 api(libs.raven.console)
                 api(kotlinx.serialization.toml)
