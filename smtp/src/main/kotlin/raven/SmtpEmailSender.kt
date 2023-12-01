@@ -33,6 +33,8 @@ class SmtpEmailSender(val options: SmtpMailerOptions) : EmailSender {
         InternetAddress(email, name)
     }
 
+    override fun supports(body: EmailContentType): Boolean = true
+
     override fun send(params: SendEmailParams): Later<SendEmailParams> = options.scope.later{
         val message = MimeMessage(session).apply {
             setFrom(params.from.toInternetAddress())
@@ -40,7 +42,7 @@ class SmtpEmailSender(val options: SmtpMailerOptions) : EmailSender {
             val multipart = MimeMultipart("mixed");
             subject = params.subject
             val messageBodyPart = MimeBodyPart();
-            messageBodyPart.setContent(params.body, "text/html");
+            messageBodyPart.setContent(params.body, params.type.value)
             multipart.addBodyPart(messageBodyPart);
 
             params.attachments.forEachIndexed { index, attachment ->
