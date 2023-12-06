@@ -6,10 +6,11 @@ import kotlinx.serialization.Serializable
 class TemplatedWrapperEmailConfiguration(
     val email: TemplatedEmailConfiguration? = null
 ) {
-    fun toOptions(
-        brand: String,
-        domain: String,
-        address: String,
-        service: String
-    ) = email?.toOptions(brand, domain, address, service)
+
+    fun toAddress(service: String) = Address(
+        name = email?.name ?: service.replaceFirstChar { it.uppercaseChar() },
+        email = email?.address ?: throw IllegalArgumentException("$service email address is required")
+    )
+
+    fun toSubject(service: String) = email?.subject ?: throw IllegalArgumentException("$service subject is required")
 }
