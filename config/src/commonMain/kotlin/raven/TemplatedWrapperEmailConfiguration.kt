@@ -12,5 +12,5 @@ class TemplatedWrapperEmailConfiguration(
         email = email?.address ?: throw IllegalArgumentException("$service email address is required")
     )
 
-    fun toSubject(service: String) = email?.subject ?: throw IllegalArgumentException("$service subject is required")
+    fun toSubject(service: String) = email?.subject ?: throw IllegalArgumentException("$service email subject is required")
 }
