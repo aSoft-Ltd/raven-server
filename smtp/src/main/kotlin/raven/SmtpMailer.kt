@@ -2,6 +2,11 @@ package raven
 
 import kollections.List
 import koncurrent.Later
+import koncurrent.later.then
+import koncurrent.later.andThen
+import koncurrent.later.andZip
+import koncurrent.later.zip
+import koncurrent.later.catch
 import javax.activation.DataHandler
 import javax.activation.FileDataSource
 import javax.mail.Authenticator
