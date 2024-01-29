@@ -1,13 +1,14 @@
 @file:OptIn(ExperimentalCoroutinesApi::class)
 
-import identifier.Email
-import kollections.iListOf
 import kommander.expect
+import koncurrent.later.await
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import koncurrent.later.await
-import raven.*
-import java.util.*
+import raven.Address
+import raven.SendEmailParams
+import raven.SmtpEmailSender
+import raven.SmtpMailerOptions
+import java.util.Properties
 import kotlin.test.Test
 
 class SmtpEmailSenderTest {
